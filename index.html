@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>suzunokana のホームページ</title>
+<meta name="description" content="Scratchで活動する suzunokana の公式ホームページ。作品紹介、共同制作ツール、リンク集。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fdfcff;
+    --card:#ffffff;
+    --text:#4a4553;
+    --muted:#a8a2b3;
+    --blue:#4C97FF;
+    --orange:#FF8C1A;
+    --pink:#ffb8d1;
+    --lav:#c4b5fd;
+    --mint:#a5e8e0;
+    --shadow:0 8px 30px rgba(180,170,200,.14);
+    --radius:20px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Zen Maru Gothic',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+    overflow-x:hidden;
+  }
+  .blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:.5;z-index:-1;pointer-events:none;}
+  .blob.b1{width:340px;height:340px;background:#dbeafe;top:-90px;left:-90px;}
+  .blob.b2{width:300px;height:300px;background:#ffe4ec;top:32%;right:-110px;}
+  .blob.b3{width:280px;height:280px;background:#fff1de;bottom:-90px;left:12%;}
+  .wrap{max-width:960px;margin:0 auto;padding:28px 18px 64px;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    background:var(--card);
+    border-radius:28px;
+    box-shadow:var(--shadow);
+    padding:44px 28px 36px;
+    text-align:center;
+    margin-top:14px;
+  }
+  .hero img.avatar{
+    width:118px;height:118px;border-radius:32px;
+    border:4px solid #eef4ff;
+    box-shadow:0 6px 18px rgba(76,151,255,.22);
+    background:#eef4ff;
+  }
+  .hero h1{
+    font-size:2.5rem;font-weight:900;letter-spacing:.02em;margin-top:14px;
+    background:linear-gradient(90deg,var(--blue),var(--lav),var(--orange));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+  .badge{
+    font-size:.8rem;font-weight:700;color:#6b6580;
+    background:#f4f2fb;border:1px solid #e9e5f6;
+    padding:3px 12px;border-radius:999px;
+  }
+  .badge.blue{background:#eef4ff;border-color:#d7e6ff;color:#3b78d4;}
+  .hero p.lead{margin-top:16px;font-size:1.02rem;}
+  .hero p.lead b{color:#3b78d4;}
+  .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px;}
+  .btn{
+    display:inline-block;text-decoration:none;font-weight:900;color:#fff;
+    padding:12px 26px;border-radius:999px;font-size:.98rem;
+    background:linear-gradient(135deg,var(--blue),var(--lav),var(--pink),var(--orange));
+    background-size:300% 300%;
+    animation:gradShift 7s ease infinite;
+    box-shadow:0 6px 16px rgba(150,140,220,.35);
+    transition:transform .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn.sub{
+    background:#fff;color:#6b6580;border:2px solid #e9e5f6;box-shadow:none;animation:none;
+  }
+  @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+  /* ---------- sections ---------- */
+  section{margin-top:52px;}
+  .sec-title{
+    font-size:1.45rem;font-weight:900;text-align:center;margin-bottom:6px;
+  }
+  .sec-title::after{
+    content:"";display:block;width:56px;height:4px;border-radius:2px;margin:8px auto 0;
+    background:linear-gradient(90deg,var(--blue),var(--orange));
+  }
+  .sec-sub{text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:22px;}
+
+  /* ---------- stats ---------- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .stat{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:20px 10px 16px;text-align:center;
+  }
+  .stat .num{font-size:1.9rem;font-weight:900;line-height:1.2;}
+  .stat .num.blue{color:var(--blue);} .stat .num.orange{color:var(--orange);}
+  .stat .num.pink{color:#f27ba7;} .stat .num.lav{color:#8b6fe8;}
+  .stat .num.mint{color:#2bb3a3;} .stat .num.gold{color:#e8a13a;}
+  .stat .lbl{font-size:.85rem;color:var(--muted);font-weight:700;margin-top:2px;}
+
+  /* ---------- projects ---------- */
+  .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .proj{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    overflow:hidden;text-decoration:none;color:var(--text);
+    transition:transform .15s ease;
+    display:block;
+  }
+  .proj:hover{transform:translateY(-3px);}
+  .proj img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#eef4ff;}
+  .proj .body{padding:14px 16px 16px;}
+  .proj .rank{
+    display:inline-block;font-size:.72rem;font-weight:900;color:#fff;
+    background:linear-gradient(135deg,var(--blue),var(--lav));
+    padding:1px 10px;border-radius:999px;margin-bottom:6px;
+  }
+  .proj h3{font-size:1rem;font-weight:900;line-height:1.5;}
+  .proj .meta{font-size:.85rem;color:var(--muted);margin-top:4px;}
+  .more-link{text-align:center;margin-top:20px;}
+  .more-link a{color:#3b78d4;font-weight:900;text-decoration:none;}
+  .more-link a:hover{text-decoration:underline;}
+
+  /* ---------- featured / tools ---------- */
+  .feature{
+    background:linear-gradient(135deg,#eef4ff,#fdf2f8);
+    border:2px solid #d7e6ff;border-radius:24px;
+    padding:26px;text-align:center;box-shadow:var(--shadow);
+  }
+  .feature .tag{
+    display:inline-block;font-size:.75rem;font-weight:900;color:#fff;
+    background:var(--orange);padding:2px 12px;border-radius:999px;
+  }
+  .feature h3{font-size:1.25rem;font-weight:900;margin-top:10px;}
+  .feature p{font-size:.95rem;margin-top:6px;}
+  .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px;}
+  .tool{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:22px;text-decoration:none;color:var(--text);display:block;
+    transition:transform .15s ease;
+  }
+  .tool:hover{transform:translateY(-3px);}
+  .tool .no{font-size:.75rem;font-weight:900;color:var(--blue);letter-spacing:.08em;}
+  .tool h3{font-size:1.1rem;font-weight:900;margin-top:4px;}
+  .tool p{font-size:.9rem;color:#6b6580;margin-top:4px;}
+
+  /* ---------- links ---------- */
+  .links{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .link-card{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:18px 20px;text-decoration:none;color:var(--text);
+    display:flex;align-items:center;gap:14px;
+    transition:transform .15s ease;
+  }
+  .link-card:hover{transform:translateY(-3px);}
+  .link-card .icon{
+    width:46px;height:46px;border-radius:14px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.3rem;font-weight:900;color:#fff;
+  }
+  .icon.scratch{background:var(--blue);} .icon.youtube{background:#ff5a5a;}
+  .icon.hp{background:var(--lav);} .icon.toolbox{background:var(--orange);}
+  .link-card .t{font-weight:900;line-height:1.4;}
+  .link-card .d{font-size:.82rem;color:var(--muted);line-height:1.5;}
+
+  footer{
+    margin-top:60px;text-align:center;color:var(--muted);font-size:.85rem;
+  }
+  footer .name{font-weight:900;color:#6b6580;}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.on{opacity:1;transform:translateY(0);}
+
+  @media(max-width:640px){
+    .hero h1{font-size:2rem;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .projects,.tools,.links{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<div class="wrap">
+
+  <!-- hero -->
+  <header class="hero reveal">
+    <img class="avatar" src="https://cdn2.scratch.mit.edu/get_image/user/145926730_90x90.png?v=" alt="suzunokana のアイコン">
+    <h1>suzunokana</h1>
+    <div class="badges">
+      <span class="badge blue">Scratcher</span>
+      <span class="badge">2024年11月4日 参加</span>
+      <span class="badge">Japan</span>
+    </div>
+    <p class="lead">Scratchでゲームやツールをたくさん作っている <b>suzunokana</b> の公式ホームページです。<br>人気の作品や、とろろぉーーーー との共同制作ツールをまとめています。</p>
+    <div class="btns">
+      <a class="btn" href="https://scratch.mit.edu/users/suzunokana/" target="_blank" rel="noopener">Scratchプロフィールへ</a>
+      <a class="btn sub" href="https://www.youtube.com/channel/UCL2ea2BYAx8iChBepOuUUuw" target="_blank" rel="noopener">YouTube（とろろぉーーーー）</a>
+    </div>
+  </header>
+
+  <!-- stats -->
+  <section class="reveal">
+    <h2 class="sec-title">数字で見る suzunokana</h2>
+    <p class="sec-sub">2026年11月14日 時点</p>
+    <div class="stats">
+      <div class="stat"><div class="num blue">593</div><div class="lbl">作品数</div></div>
+      <div class="stat"><div class="num orange">7,364</div><div class="lbl">総閲覧数</div></div>
+      <div class="stat"><div class="num pink">637</div><div class="lbl">もらったハート</div></div>
+      <div class="stat"><div class="num gold">645</div><div class="lbl">もらったお気に入り</div></div>
+      <div class="stat"><div class="num lav">413</div><div class="lbl">フォロワー</div></div>
+      <div class="stat"><div class="num mint">740</div><div class="lbl">活動日数（日）</div></div>
+    </div>
+  </section>
+
+  <!-- projects -->
+  <section class="reveal">
+    <h2 class="sec-title">人気の作品</h2>
+    <p class="sec-sub">再生数が多い順にピックアップ</p>
+    <div class="projects">
+      <a class="proj" href="https://scratch.mit.edu/projects/1185472700/" target="_blank" rel="noopener">
+        <img src="https://cdn2.scratch.mit.edu/get_image/project/1185472700_480x360.png" alt="">
+        <div class="body">
+          <span class="rank">1位</span>
+          <h3>【拡散希望】モバイル対応プラットフォーマー/Mobile-compatible platform</h3>
+          <p class="meta">👁 651 ・ ❤ 32 ・ ⭐ 31</p>
+        </div>
+      </a>
+      <a class="proj" href="https://scratch.mit.edu/projects/1197784277/" target="_blank" rel="noopener">
+        <img src="https://cdn2.scratch.mit.edu/get_image/project/1197784277_480x360.png" alt="">
+        <div class="body">
+          <span class="rank">2位</span>
+          <h3>前名前が「重すぎるころころ」だってけどコメントを見て試したら軽かったころころ</h3>
+          <p class="meta">👁 560 ・ ❤ 7 ・ ⭐ 7</p>
+        </div>
+      </a>
+      <a class="proj" href="https://scratch.mit.edu/projects/1097395813/" target="_blank" rel="noopener">
+        <img src="https://cdn2.scratch.mit.edu/get_image/project/1097395813_480x360.png" alt="">
+        <div class="body">
+          <span class="rank">3位</span>
+          <h3>心霊日立エレベーター</h3>
+          <p class="meta">👁 228 ・ ❤ 2 ・ ⭐ 3</p>
+        </div>
+      </a>
+      <a class="proj" href="https://scratch.mit.edu/projects/1173629908/" target="_blank" rel="noopener">
+        <img src="https://cdn2.scratch.mit.edu/get_image/project/1173629908_480x360.png" alt="">
+        <div class="body">
+          <span class="rank">4位</span>
+          <h3>なんか気まずくない</h3>
+          <p class="meta">👁 178 ・ ❤ 2 ・ ⭐ 2</p>
+        </div>
+      </a>
+      <a class="proj" href="https://scratch.mit.edu/projects/1113057613/" target="_blank" rel="noopener">
+        <img src="https://cdn2.scratch.mit.edu/get_image/project/1113057613_480x360.png" alt="">
+        <div class="body">
+          <span class="rank">5位</span>
+          <h3>catの中国ダンス(カンカンカンダンス)</h3>
+          <p class="meta">👁 145 ・ ❤ 3 ・ ⭐ 3</p>
+        </div>
+      </a>
+      <a class="proj" href="https://scratch.mit.edu/projects/1168242438/" target="_blank" rel="noopener">
+        <img src="https://cdn2.scratch.mit.edu/get_image/project/1168242438_480x360.png" alt="">
+        <div class="body">
+          <span class="rank">6位</span>
+          <h3>supertype 神ゲー</h3>
+          <p class="meta">👁 136 ・ ❤ 1 ・ ⭐ 1</p>
+        </div>
+      </a>
+    </div>
+    <p class="more-link"><a href="https://scratch.mit.edu/users/suzunokana/projects/" target="_blank" rel="noopener">作品一覧をScratchで見る →</a></p>
+  </section>
+
+  <!-- featured + tools -->
+  <section class="reveal">
+    <h2 class="sec-title">共同制作ツール</h2>
+    <p class="sec-sub">suzunokana × とろろぉーーーー</p>
+    <div class="feature">
+      <span class="tag">注目の作品</span>
+      <h3>ScratchLoginSystem 認証コード受付</h3>
+      <p>ホームページにScratchアカウントでログインできる仕組み「ScratchLoginSystem」の認証用プロジェクト。<br>このページの作者がScratchでいちばん力を入れている作品です。</p>
+      <div class="btns">
+        <a class="btn" href="https://scratch.mit.edu/projects/1436331790/" target="_blank" rel="noopener">Scratchで開く</a>
+        <a class="btn sub" href="https://tr3131kami.github.io/ScratchLoginSystem/" target="_blank" rel="noopener">ScratchLoginSystem 公式ページ</a>
+      </div>
+    </div>
+    <div class="tools">
+      <a class="tool" href="https://tr3131kami.github.io/ScratchLoginSystem/" target="_blank" rel="noopener">
+        <div class="no">第1弾</div>
+        <h3>ScratchLoginSystem</h3>
+        <p>ホームページにScratchアカウントでログインできる仕組み。認証コードをコメントするだけでログインできます。</p>
+      </a>
+      <a class="tool" href="https://tr3131kami.github.io/tools/profile.html" target="_blank" rel="noopener">
+        <div class="no">第2弾</div>
+        <h3>ScratchProfileCard</h3>
+        <p>Scratchのプロフィールカードをホームページに埋め込めるウィジェット。アイコンや自己紹介を表示できます。</p>
+      </a>
+    </div>
+    <p class="more-link"><a href="https://tr3131kami.github.io/tools/" target="_blank" rel="noopener">ツール集はこちら →</a></p>
+  </section>
+
+  <!-- links -->
+  <section class="reveal">
+    <h2 class="sec-title">リンク</h2>
+    <p class="sec-sub">suzunokana の活動場所</p>
+    <div class="links">
+      <a class="link-card" href="https://scratch.mit.edu/users/suzunokana/" target="_blank" rel="noopener">
+        <span class="icon scratch">S</span>
+        <span><span class="t">Scratch</span><br><span class="d">作品とプロフィール（suzunokana）</span></span>
+      </a>
+      <a class="link-card" href="https://www.youtube.com/channel/UCL2ea2BYAx8iChBepOuUUuw" target="_blank" rel="noopener">
+        <span class="icon youtube">▶</span>
+        <span><span class="t">YouTube</span><br><span class="d">とろろぉーーーー のチャンネル</span></span>
+      </a>
+      <a class="link-card" href="https://tr3131kami.github.io/yt-hp/" target="_blank" rel="noopener">
+        <span class="icon hp">H</span>
+        <span><span class="t">とろろぉーーーー HP</span><br><span class="d">とろろぉーーーーの公式ホームページ</span></span>
+      </a>
+      <a class="link-card" href="https://tr3131kami.github.io/tools/" target="_blank" rel="noopener">
+        <span class="icon toolbox">T</span>
+        <span><span class="t">ツール集</span><br><span class="d">suzunokana × とろろぉーーーー のツールまとめ</span></span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p><span class="name">suzunokana</span> 公式ホームページ</p>
+    <p>このページはファンメイドではなく、本人の公式ページです。</p>
+  </footer>
+</div>
+
+<script>
+  const io = new IntersectionObserver((es)=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
+  },{threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
