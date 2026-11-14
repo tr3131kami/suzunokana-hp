@@ -185,6 +185,9 @@
   #lmEmailForm input{padding:10px 14px;border-radius:12px;border:1px solid rgba(160,150,190,.55);font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);width:100%;}
   .lm-row{display:flex;gap:8px;}
   .lm-err{color:#d64560;font-size:13px;text-align:center;}
+  .lm-reset{background:none;border:none;color:#3b78d4;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;padding:2px;}
+  .lm-info{color:#2b9d8f;font-size:13px;text-align:center;}
+  .lm-info[hidden]{display:none;}
   .lm-err[hidden]{display:none;}
   .members-locked{text-align:center;padding:24px 12px;border:2px dashed #f3b8d0;border-radius:16px;background:var(--card);}
   [data-theme="dark"] .members-locked{border-color:#6b5570;}
@@ -602,6 +605,8 @@ https://www.youtube.com/channel/UCL2ea2BYAx8iChBepOuUUuw</p>
         <button type="button" class="lm-btn" id="lmEmailSignup">新規登録</button>
       </div>
     </form>
+    <button type="button" class="lm-reset" id="lmReset">パスワードを忘れた場合</button>
+    <p class="lm-info" id="lmInfo" hidden></p>
     <p class="lm-err" id="lmError" hidden></p>
   </div>
 </div>
@@ -609,7 +614,7 @@ https://www.youtube.com/channel/UCL2ea2BYAx8iChBepOuUUuw</p>
 <script src="https://tr3131kami.github.io/ScratchLoginSystem/scratch-login.js"></script>
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, GithubAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, getAdditionalUserInfo } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, GithubAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, getAdditionalUserInfo } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getFirestore, doc, getDoc, runTransaction } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -731,7 +736,7 @@ function render() {
     heroLogin.textContent = 'ログイン';
   }
 }
-function openModal() { lmError.hidden = true; modal.hidden = false; }
+function openModal() { lmError.hidden = true; document.getElementById('lmInfo').hidden = true; modal.hidden = false; }
 function closeModal() { modal.hidden = true; }
 function showError(text) { lmError.textContent = text; lmError.hidden = false; }
 function friendlyError(e) {
@@ -799,6 +804,18 @@ document.getElementById('lmEmailForm').addEventListener('submit', e => {
   const pass = document.getElementById('lmPassword').value;
   signInWithEmailAndPassword(auth, email, pass)
     .then(() => closeModal())
+    .catch(err => showError(friendlyError(err)));
+});
+document.getElementById('lmReset').addEventListener('click', () => {
+  const email = document.getElementById('lmEmail').value.trim();
+  if (!email) { showError('メールアドレスを入れてね'); return; }
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      lmError.hidden = true;
+      const info = document.getElementById('lmInfo');
+      info.textContent = 'パスワード再設定のメールを送りました。メールを確認してね';
+      info.hidden = false;
+    })
     .catch(err => showError(friendlyError(err)));
 });
 document.getElementById('lmEmailSignup').addEventListener('click', () => {
