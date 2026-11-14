@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 <style>
   :root{
     --bg:#fdfcff;
@@ -174,6 +175,14 @@
   }
   footer .name{font-weight:900;color:#6b6580;}
 
+  .msr{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-smoothing:antialiased;font-variation-settings:'FILL' 1,'wght' 600,'GRAD' 0,'opsz' 24;vertical-align:-.12em;}
+  .stat .ic{font-size:1.55rem;margin-bottom:2px;}
+  .ic.blue{color:var(--blue);} .ic.orange{color:var(--orange);} .ic.pink{color:#f27ba7;}
+  .ic.gold{color:#e8a13a;} .ic.lav{color:#8b6fe8;} .ic.mint{color:#2bb3a3;}
+  .stat-note{text-align:center;color:var(--muted);font-size:.8rem;margin-top:12px;}
+  .proj .meta .msr{font-size:1.02rem;margin:0 3px 0 10px;}
+  .proj .meta .msr:first-child{margin-left:0;}
+  .feat-thumb{width:min(320px,100%);border-radius:14px;box-shadow:var(--shadow);margin-top:14px;}
   .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
   .reveal.on{opacity:1;transform:translateY(0);}
 
@@ -207,15 +216,16 @@
   <!-- stats -->
   <section class="reveal">
     <h2 class="sec-title">数字で見る suzunokana</h2>
-    <p class="sec-sub">2026年11月14日 時点</p>
+    <p class="sec-sub">開くたびにScratchから最新の数字を取得します</p>
     <div class="stats">
-      <div class="stat"><div class="num blue">593</div><div class="lbl">作品数</div></div>
-      <div class="stat"><div class="num orange">7,364</div><div class="lbl">総閲覧数</div></div>
-      <div class="stat"><div class="num pink">637</div><div class="lbl">もらったハート</div></div>
-      <div class="stat"><div class="num gold">645</div><div class="lbl">もらったお気に入り</div></div>
-      <div class="stat"><div class="num lav">413</div><div class="lbl">フォロワー</div></div>
-      <div class="stat"><div class="num mint">740</div><div class="lbl">活動日数（日）</div></div>
+      <div class="stat"><span class="msr ic blue">grid_view</span><div class="num blue" id="stProjects">593</div><div class="lbl">作品数</div></div>
+      <div class="stat"><span class="msr ic orange">visibility</span><div class="num orange">7,364</div><div class="lbl">総閲覧数</div></div>
+      <div class="stat"><span class="msr ic pink">favorite</span><div class="num pink">637</div><div class="lbl">もらったハート</div></div>
+      <div class="stat"><span class="msr ic gold">star</span><div class="num gold">645</div><div class="lbl">もらったお気に入り</div></div>
+      <div class="stat"><span class="msr ic lav">group</span><div class="num lav" id="stFollowers">363</div><div class="lbl">フォロワー</div></div>
+      <div class="stat"><span class="msr ic mint">person_add</span><div class="num mint" id="stFollowing">1,000</div><div class="lbl">フォロー中</div></div>
     </div>
+    <p class="stat-note">※総閲覧数・ハート・お気に入りは2026年11月14日時点の数字です</p>
   </section>
 
   <!-- projects -->
@@ -228,7 +238,7 @@
         <div class="body">
           <span class="rank">1位</span>
           <h3>【拡散希望】モバイル対応プラットフォーマー/Mobile-compatible platform</h3>
-          <p class="meta">👁 651 ・ ❤ 32 ・ ⭐ 31</p>
+          <p class="meta"><span class="msr">visibility</span>651 <span class="msr">favorite</span>32 <span class="msr">star</span>31</p>
         </div>
       </a>
       <a class="proj" href="https://scratch.mit.edu/projects/1197784277/" target="_blank" rel="noopener">
@@ -236,7 +246,7 @@
         <div class="body">
           <span class="rank">2位</span>
           <h3>前名前が「重すぎるころころ」だってけどコメントを見て試したら軽かったころころ</h3>
-          <p class="meta">👁 560 ・ ❤ 7 ・ ⭐ 7</p>
+          <p class="meta"><span class="msr">visibility</span>560 <span class="msr">favorite</span>7 <span class="msr">star</span>7</p>
         </div>
       </a>
       <a class="proj" href="https://scratch.mit.edu/projects/1097395813/" target="_blank" rel="noopener">
@@ -244,7 +254,7 @@
         <div class="body">
           <span class="rank">3位</span>
           <h3>心霊日立エレベーター</h3>
-          <p class="meta">👁 228 ・ ❤ 2 ・ ⭐ 3</p>
+          <p class="meta"><span class="msr">visibility</span>228 <span class="msr">favorite</span>2 <span class="msr">star</span>3</p>
         </div>
       </a>
       <a class="proj" href="https://scratch.mit.edu/projects/1173629908/" target="_blank" rel="noopener">
@@ -252,7 +262,7 @@
         <div class="body">
           <span class="rank">4位</span>
           <h3>なんか気まずくない</h3>
-          <p class="meta">👁 178 ・ ❤ 2 ・ ⭐ 2</p>
+          <p class="meta"><span class="msr">visibility</span>178 <span class="msr">favorite</span>2 <span class="msr">star</span>2</p>
         </div>
       </a>
       <a class="proj" href="https://scratch.mit.edu/projects/1113057613/" target="_blank" rel="noopener">
@@ -260,7 +270,7 @@
         <div class="body">
           <span class="rank">5位</span>
           <h3>catの中国ダンス(カンカンカンダンス)</h3>
-          <p class="meta">👁 145 ・ ❤ 3 ・ ⭐ 3</p>
+          <p class="meta"><span class="msr">visibility</span>145 <span class="msr">favorite</span>3 <span class="msr">star</span>3</p>
         </div>
       </a>
       <a class="proj" href="https://scratch.mit.edu/projects/1168242438/" target="_blank" rel="noopener">
@@ -268,7 +278,7 @@
         <div class="body">
           <span class="rank">6位</span>
           <h3>supertype 神ゲー</h3>
-          <p class="meta">👁 136 ・ ❤ 1 ・ ⭐ 1</p>
+          <p class="meta"><span class="msr">visibility</span>136 <span class="msr">favorite</span>1 <span class="msr">star</span>1</p>
         </div>
       </a>
     </div>
@@ -281,10 +291,11 @@
     <p class="sec-sub">suzunokana × とろろぉーーーー</p>
     <div class="feature">
       <span class="tag">注目の作品</span>
-      <h3>ScratchLoginSystem 認証コード受付</h3>
+      <img id="featThumb" class="feat-thumb" src="https://uploads.scratch.mit.edu/projects/thumbnails/1436331790.png" alt="注目の作品のサムネイル">
+      <h3 id="featTitle">ScratchLoginSystem 認証コード受付</h3>
       <p>ホームページにScratchアカウントでログインできる仕組み「ScratchLoginSystem」の認証用プロジェクト。<br>このページの作者がScratchでいちばん力を入れている作品です。</p>
       <div class="btns">
-        <a class="btn" href="https://scratch.mit.edu/projects/1436331790/" target="_blank" rel="noopener">Scratchで開く</a>
+        <a class="btn" id="featLink" href="https://scratch.mit.edu/projects/1436331790/" target="_blank" rel="noopener">Scratchで開く</a>
         <a class="btn sub" href="https://tr3131kami.github.io/ScratchLoginSystem/" target="_blank" rel="noopener">ScratchLoginSystem 公式ページ</a>
       </div>
     </div>
@@ -309,19 +320,19 @@
     <p class="sec-sub">suzunokana の活動場所</p>
     <div class="links">
       <a class="link-card" href="https://scratch.mit.edu/users/suzunokana/" target="_blank" rel="noopener">
-        <span class="icon scratch">S</span>
+        <span class="icon scratch"><span class="msr">extension</span></span>
         <span><span class="t">Scratch</span><br><span class="d">作品とプロフィール（suzunokana）</span></span>
       </a>
       <a class="link-card" href="https://www.youtube.com/channel/UCL2ea2BYAx8iChBepOuUUuw" target="_blank" rel="noopener">
-        <span class="icon youtube">▶</span>
+        <span class="icon youtube"><span class="msr">smart_display</span></span>
         <span><span class="t">YouTube</span><br><span class="d">とろろぉーーーー のチャンネル</span></span>
       </a>
       <a class="link-card" href="https://tr3131kami.github.io/yt-hp/" target="_blank" rel="noopener">
-        <span class="icon hp">H</span>
+        <span class="icon hp"><span class="msr">home</span></span>
         <span><span class="t">とろろぉーーーー HP</span><br><span class="d">とろろぉーーーーの公式ホームページ</span></span>
       </a>
       <a class="link-card" href="https://tr3131kami.github.io/tools/" target="_blank" rel="noopener">
-        <span class="icon toolbox">T</span>
+        <span class="icon toolbox"><span class="msr">widgets</span></span>
         <span><span class="t">ツール集</span><br><span class="d">suzunokana × とろろぉーーーー のツールまとめ</span></span>
       </a>
     </div>
@@ -329,7 +340,6 @@
 
   <footer>
     <p><span class="name">suzunokana</span> 公式ホームページ</p>
-    <p>このページはファンメイドではなく、本人の公式ページです。</p>
   </footer>
 </div>
 
@@ -338,6 +348,36 @@
     es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
   },{threshold:.08});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+<script>
+  // 開くたびにScratchから最新の数字と「注目の作品」を取得して差し替える
+  (() => {
+    const jobs = [
+      ['stProjects', 'projects', /Shared Projects\s*\(([\d,]+)\)/],
+      ['stFollowers', 'followers', /Followers\s*\(([\d,]+)\)/],
+      ['stFollowing', 'following', /Following\s*\(([\d,]+)\)/]
+    ];
+    jobs.forEach(async ([id, page, re]) => {
+      try {
+        const t = await (await fetch('https://scratch.mit.edu/users/suzunokana/' + page + '/')).text();
+        const m = t.match(re);
+        if (m) document.getElementById(id).textContent = m[1];
+      } catch (e) { /* 取れないときは表示中の数字のまま */ }
+    });
+    fetch('https://scratch.mit.edu/site-api/users/all/suzunokana/')
+      .then(r => r.json())
+      .then(d => {
+        const f = d && d.featured_project_data;
+        if (!f) return;
+        const title = document.getElementById('featTitle');
+        const thumb = document.getElementById('featThumb');
+        const link = document.getElementById('featLink');
+        if (title) title.textContent = f.title;
+        if (thumb && f.thumbnail_url) thumb.src = 'https:' + f.thumbnail_url;
+        if (link) link.href = 'https://scratch.mit.edu/projects/' + f.id + '/';
+      })
+      .catch(() => {});
+  })();
 </script>
 </body>
 </html>
