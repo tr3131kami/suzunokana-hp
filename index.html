@@ -241,6 +241,7 @@
     .stats{grid-template-columns:repeat(2,1fr);}
     .projects,.tools,.links,.profile-cards{grid-template-columns:1fr;}
   }
+.pk-block{margin-top:22px;border-top:2px dashed #f1e9f7;padding-top:18px}.pk-title{font-weight:900;margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -311,6 +312,16 @@ https://www.youtube.com/channel/UCL2ea2BYAx8iChBepOuUUuw</p>
       </div>
       <div class="btns" style="justify-content:flex-start;margin-top:0;">
         <button class="btn sub" id="mpLogout" type="button">ログアウト</button>
+      </div>
+      <div class="pk-block">
+        <div class="pk-title"><span class="msr" style="font-size:20px;vertical-align:-4px;">passkey</span> パスキー</div>
+        <p id="pkStatus" style="font-weight:700;">確認中…</p>
+        <p style="font-size:.82rem;color:var(--muted);font-weight:700;">登録すると、この端末の指紋・顔認証などでログインできます（登録情報はこの端末の中だけに保存されます）。</p>
+        <div class="btns" style="justify-content:flex-start;margin-top:10px;">
+          <button class="btn" id="pkRegisterBtn" type="button">パスキーを登録</button>
+          <button class="btn sub" id="pkDeleteBtn" type="button">登録を削除</button>
+        </div>
+        <p id="pkMsg" style="font-size:.86rem;font-weight:700;margin-top:8px;"></p>
       </div>
     </div>
   </section>
@@ -596,6 +607,7 @@ https://www.youtube.com/channel/UCL2ea2BYAx8iChBepOuUUuw</p>
     <button class="lm-btn" id="lmScratch" type="button">Scratchでログイン</button>
     <button class="lm-btn" id="lmGoogle" type="button">Googleでログイン</button>
     <button class="lm-btn" id="lmGithub" type="button">GitHubでログイン</button>
+    <button class="lm-btn" id="lmPasskey" type="button">パスキーでログイン</button>
     <div class="lm-sep">または</div>
     <form id="lmEmailForm">
       <input type="email" id="lmEmail" placeholder="メールアドレス" autocomplete="email" required>
@@ -641,6 +653,10 @@ const mpNo = document.getElementById('mpNo');
 
 const USER_KEY = 'sa_username';
 const NAME_HINT_KEY = 'tororo_fb_name_hint';
+const PK_KEY = 'tororo_passkey', PK_SESSION = 'tororo_pk_user';
+const pkSupported = !!window.PublicKeyCredential;
+function pkRecord() { try { return JSON.parse(localStorage.getItem(PK_KEY) || 'null'); } catch (e) { return null; } }
+function pkUserName() { try { return sessionStorage.getItem(PK_SESSION); } catch (e) { return null; } }
 
 let scratchUser = null;
 try { scratchUser = localStorage.getItem(USER_KEY); } catch (e) {}
@@ -671,6 +687,7 @@ function identity() {
     try { const hh = JSON.parse(localStorage.getItem(NAME_HINT_KEY) || 'null'); if (hh && hh.uid === fbUser.uid) hint = hh.name; } catch (e) {}
     return { name: fbUser.displayName || hint || fbUser.email || 'ユーザー', avatar: fbUser.photoURL || null, link: null };
   }
+  const pkn = pkUserName(); if (pkn) return { name: pkn, avatar: null, link: null };
   if (scratchUser) return { name: scratchUser, avatar: null, link: 'https://scratch.mit.edu/users/' + encodeURIComponent(scratchUser) + '/' };
   return null;
 }
@@ -687,6 +704,7 @@ function methodLabel() {
     const p = (fbUser.providerData && fbUser.providerData[0] && fbUser.providerData[0].providerId) || '';
     return ({ 'google.com': 'Google', 'github.com': 'GitHub', 'password': 'メールアドレス' })[p] || 'ログイン';
   }
+  if (pkUserName()) return 'パスキー';
   if (scratchUser) return 'Scratch';
   return '';
 }
@@ -735,6 +753,7 @@ function render() {
     mypageInner.hidden = true;
     heroLogin.textContent = 'ログイン';
   }
+  renderPk();
 }
 function openModal() { lmError.hidden = true; document.getElementById('lmInfo').hidden = true; modal.hidden = false; }
 function closeModal() { modal.hidden = true; }
@@ -783,6 +802,7 @@ async function doLogout() {
   fbMemberNo = null;
   scratchUser = null;
   try { localStorage.removeItem(USER_KEY); localStorage.removeItem(NAME_HINT_KEY); } catch (e) {}
+  try { sessionStorage.removeItem(PK_SESSION); } catch (e) {}
   if (window.ScratchLogin) { try { ScratchLogin.logout(); } catch (e) {} }
   render();
 }
@@ -825,6 +845,74 @@ document.getElementById('lmEmailSignup').addEventListener('click', () => {
   createUserWithEmailAndPassword(auth, email, pass)
     .then(() => closeModal())
     .catch(err => showError(friendlyError(err)));
+});
+
+document.getElementById('lmPasskey').addEventListener('click', () => { lmError.hidden = true; document.getElementById('lmInfo').hidden = true; pkLoginFlow(); });
+/* パスキー（yt-hp・とろID設定ページと共通の保存形式） */
+const b64enc = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
+const b64dec = s => Uint8Array.from(atob(s.replaceAll('-', '+').replaceAll('_', '/')), c => c.charCodeAt(0));
+function pkMsgSet(text, ok) { const m = document.getElementById('pkMsg'); if (!m) return; m.textContent = text || ''; m.style.color = text ? (ok ? '#1e7d55' : '#c2435e') : ''; }
+function renderPk() {
+  const st = document.getElementById('pkStatus'); if (!st) return;
+  const rec = pkRecord();
+  if (!pkSupported) st.textContent = 'このブラウザはパスキーに未対応です';
+  else if (rec) st.textContent = '登録済み（' + rec.name + '）— この端末でパスキーログインできます';
+  else st.textContent = '未登録です';
+  document.getElementById('pkRegisterBtn').disabled = !pkSupported || !identity();
+  document.getElementById('pkDeleteBtn').disabled = !rec;
+}
+async function pkRegister() {
+  pkMsgSet('');
+  const idn = identity();
+  if (!idn) { pkMsgSet('先にログインしてから登録してね', false); return; }
+  if (!pkSupported) { pkMsgSet('このブラウザはパスキーに未対応です', false); return; }
+  if (pkRecord()) { pkMsgSet('すでに登録済みです。作り直す場合は先に「登録を削除」してね', false); return; }
+  try {
+    const cred = await navigator.credentials.create({ publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      rp: { name: 'とろろぉーーーーID', id: location.hostname },
+      user: { id: new TextEncoder().encode('tororo-' + idn.name).slice(0, 64), name: idn.name, displayName: idn.name },
+      pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+      authenticatorSelection: { userVerification: 'preferred', residentKey: 'preferred' },
+      timeout: 60000
+    } });
+    const spki = cred.response.getPublicKey ? cred.response.getPublicKey() : null;
+    if (!spki) { pkMsgSet('この端末では公開鍵を取得できず、登録できませんでした', false); return; }
+    localStorage.setItem(PK_KEY, JSON.stringify({ credId: b64enc(cred.rawId), spki: b64enc(spki), alg: cred.response.getPublicKeyAlgorithm(), name: idn.name }));
+    pkMsgSet('登録しました！次回からパスキーでログインできます', true); renderPk();
+  } catch (e) {
+    pkMsgSet(e && e.name === 'NotAllowedError' ? 'キャンセルされました' : '登録に失敗しました（' + (e && e.name ? e.name : 'error') + '）', false);
+  }
+}
+async function pkLoginFlow() {
+  const rec = pkRecord();
+  if (!pkSupported) { showError('このブラウザはパスキーに未対応です'); return; }
+  if (!rec) { showError('この端末にパスキーが登録されていません。先にどれかの方法でログインして、マイページで登録してね'); return; }
+  try {
+    const assertion = await navigator.credentials.get({ publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      rpId: location.hostname,
+      allowCredentials: [{ type: 'public-key', id: b64dec(rec.credId).buffer }],
+      userVerification: 'preferred', timeout: 60000
+    } });
+    const key = await crypto.subtle.importKey('spki', b64dec(rec.spki), rec.alg === -7 ? { name: 'ECDSA', namedCurve: 'P-256' } : { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']);
+    const data = new Uint8Array(assertion.response.authenticatorData.byteLength + 32);
+    const cdHash = new Uint8Array(await crypto.subtle.digest('SHA-256', assertion.response.clientDataJSON));
+    data.set(new Uint8Array(assertion.response.authenticatorData), 0);
+    data.set(cdHash, assertion.response.authenticatorData.byteLength);
+    const ok = await crypto.subtle.verify(rec.alg === -7 ? { name: 'ECDSA', hash: 'SHA-256' } : { name: 'RSASSA-PKCS1-v1_5' }, key, assertion.response.signature, data);
+    if (!ok) { showError('パスキーの確認に失敗しました'); return; }
+    sessionStorage.setItem(PK_SESSION, rec.name);
+    closeModal(); render();
+  } catch (e) {
+    if (e && e.name !== 'NotAllowedError') showError('パスキーログインに失敗しました');
+  }
+}
+document.getElementById('pkRegisterBtn').addEventListener('click', pkRegister);
+document.getElementById('pkDeleteBtn').addEventListener('click', () => {
+  pkMsgSet('');
+  try { localStorage.removeItem(PK_KEY); sessionStorage.removeItem(PK_SESSION); } catch (e) {}
+  pkMsgSet('パスキーの登録を削除しました', true); render();
 });
 
 getRedirectResult(auth).then(result => { if (result) { rememberName(result); render(); } }).catch(() => {});
