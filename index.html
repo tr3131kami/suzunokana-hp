@@ -171,6 +171,28 @@
   .link-card .t{font-weight:900;line-height:1.4;}
   .link-card .d{font-size:.82rem;color:var(--muted);line-height:1.5;}
 
+  /* ---------- login / mypage ---------- */
+  #loginModal{position:fixed;inset:0;background:rgba(20,18,28,.5);backdrop-filter:blur(8px);z-index:450;display:flex;align-items:center;justify-content:center;padding:20px;}
+  #loginModal[hidden]{display:none;}
+  .lm-box{position:relative;background:var(--card);border-radius:20px;padding:28px 24px;width:340px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;}
+  .lm-box h3{font-size:1rem;text-align:center;margin-bottom:6px;}
+  .lm-close{position:absolute;top:10px;right:12px;background:transparent;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;padding:4px;font-family:inherit;}
+  .lm-btn{background:var(--card);border:1px solid rgba(160,150,190,.5);border-radius:999px;padding:10px 16px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;font-family:inherit;width:100%;}
+  .lm-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow);}
+  .lm-primary{background:linear-gradient(135deg,var(--blue),var(--lav));color:#fff;border:none;}
+  .lm-sep{text-align:center;color:var(--muted);font-size:12px;margin:4px 0;}
+  #lmEmailForm{display:flex;flex-direction:column;gap:8px;}
+  #lmEmailForm input{padding:10px 14px;border-radius:12px;border:1px solid rgba(160,150,190,.55);font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);width:100%;}
+  .lm-row{display:flex;gap:8px;}
+  .lm-err{color:#d64560;font-size:13px;text-align:center;}
+  .lm-err[hidden]{display:none;}
+  .members-locked{text-align:center;padding:24px 12px;border:2px dashed #f3b8d0;border-radius:16px;background:var(--card);}
+  [data-theme="dark"] .members-locked{border-color:#6b5570;}
+  .member-card{display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;background:linear-gradient(120deg,#ffd7e8,#e4dcff,#d2f4e3);color:#4a4553;margin-bottom:14px;}
+  .member-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;background:#fff;}
+  .member-name{font-weight:900;font-size:18px;}
+  .member-meta{font-size:13px;opacity:.75;}
+  #mypageInner[hidden],#mypageLocked[hidden],.member-avatar[hidden],#heroLogin[hidden]{display:none;}
   footer{
     margin-top:60px;text-align:center;color:var(--muted);font-size:.85rem;
   }
@@ -236,6 +258,7 @@
     <div class="btns">
       <a class="btn" href="https://scratch.mit.edu/users/suzunokana/" target="_blank" rel="noopener">Scratchプロフィールへ</a>
       <a class="btn sub" href="https://www.youtube.com/channel/UCL2ea2BYAx8iChBepOuUUuw" target="_blank" rel="noopener">YouTube（とろろぉーーーー）</a>
+      <button class="btn sub" id="heroLogin" type="button">ログイン</button>
     </div>
   </header>
 
@@ -263,6 +286,28 @@ https://www.youtube.com/channel/UCL2ea2BYAx8iChBepOuUUuw</p>
 @5893ksuio
 友達　フォローお願い
 フォローお願い</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- mypage / login -->
+  <section class="reveal" id="mypage">
+    <h2 class="sec-title">マイページ</h2>
+    <p class="sec-sub">とろろぉーーーー のホームページとログインが同期します</p>
+    <div id="mypageLocked" class="members-locked">
+      <p>ログインすると、ここに会員カードが表示されます。</p>
+      <div class="btns"><button class="btn" id="mpLoginBtn" type="button">ログイン</button></div>
+    </div>
+    <div id="mypageInner" hidden>
+      <div class="member-card">
+        <img class="member-avatar" id="mpAvatar" alt="" hidden>
+        <div>
+          <div class="member-name" id="mpName"></div>
+          <div class="member-meta"><span id="mpMethod"></span>でログイン中 ・ <span id="mpNo"></span></div>
+        </div>
+      </div>
+      <div class="btns" style="justify-content:flex-start;margin-top:0;">
+        <button class="btn sub" id="mpLogout" type="button">ログアウト</button>
       </div>
     </div>
   </section>
@@ -541,5 +586,235 @@ https://www.youtube.com/channel/UCL2ea2BYAx8iChBepOuUUuw</p>
     });
   })();
 </script>
+<div id="loginModal" hidden>
+  <div class="lm-box">
+    <button class="lm-close" id="lmClose" type="button" aria-label="閉じる">×</button>
+    <h3>ログイン方法を選んでね</h3>
+    <button class="lm-btn" id="lmScratch" type="button">Scratchでログイン</button>
+    <button class="lm-btn" id="lmGoogle" type="button">Googleでログイン</button>
+    <button class="lm-btn" id="lmGithub" type="button">GitHubでログイン</button>
+    <div class="lm-sep">または</div>
+    <form id="lmEmailForm">
+      <input type="email" id="lmEmail" placeholder="メールアドレス" autocomplete="email" required>
+      <input type="password" id="lmPassword" placeholder="パスワード" autocomplete="current-password" required>
+      <div class="lm-row">
+        <button type="submit" class="lm-btn lm-primary">ログイン</button>
+        <button type="button" class="lm-btn" id="lmEmailSignup">新規登録</button>
+      </div>
+    </form>
+    <p class="lm-err" id="lmError" hidden></p>
+  </div>
+</div>
+
+<script src="https://tr3131kami.github.io/ScratchLoginSystem/scratch-login.js"></script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, GithubAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, getAdditionalUserInfo } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, runTransaction } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyBfKW5cuKxXBFHWV1MRumSey8PPwgcCfvQ',
+  authDomain: 'tororo-hp.firebaseapp.com',
+  projectId: 'tororo-hp',
+  storageBucket: 'tororo-hp.firebasestorage.app',
+  messagingSenderId: '133948474364',
+  appId: '1:133948474364:web:decac4c97ddd8f167ba879'
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const modal = document.getElementById('loginModal');
+const lmError = document.getElementById('lmError');
+const heroLogin = document.getElementById('heroLogin');
+const mypageLocked = document.getElementById('mypageLocked');
+const mypageInner = document.getElementById('mypageInner');
+const mpAvatar = document.getElementById('mpAvatar');
+const mpName = document.getElementById('mpName');
+const mpMethod = document.getElementById('mpMethod');
+const mpNo = document.getElementById('mpNo');
+
+const USER_KEY = 'sa_username';
+const NAME_HINT_KEY = 'tororo_fb_name_hint';
+
+let scratchUser = null;
+try { scratchUser = localStorage.getItem(USER_KEY); } catch (e) {}
+try {
+  const slsUser = localStorage.getItem('sls_user');
+  if (slsUser && !scratchUser) {
+    scratchUser = slsUser;
+    try { localStorage.setItem(USER_KEY, scratchUser); } catch (e) {}
+  }
+} catch (e) {}
+if (window.ScratchLogin) {
+  ScratchLogin.init({
+    projectId: '1436331790',
+    onLogin: function (u) {
+      scratchUser = u;
+      try { localStorage.setItem(USER_KEY, u); } catch (e) {}
+      render();
+    }
+  });
+}
+let fbUser = null;
+let fbMemberNo = null;
+let fbMemberBusy = false;
+
+function identity() {
+  if (fbUser) {
+    let hint = null;
+    try { const hh = JSON.parse(localStorage.getItem(NAME_HINT_KEY) || 'null'); if (hh && hh.uid === fbUser.uid) hint = hh.name; } catch (e) {}
+    return { name: fbUser.displayName || hint || fbUser.email || 'ユーザー', avatar: fbUser.photoURL || null, link: null };
+  }
+  if (scratchUser) return { name: scratchUser, avatar: null, link: 'https://scratch.mit.edu/users/' + encodeURIComponent(scratchUser) + '/' };
+  return null;
+}
+function scratchAvatar(imgEl, username) {
+  fetch('https://scratch.mit.edu/site-api/users/all/' + encodeURIComponent(username) + '/')
+    .then(r => r.json())
+    .then(d => {
+      const img = d && d.thumbnail_url;
+      if (img && identity() && identity().name === username) { imgEl.src = 'https:' + img; imgEl.hidden = false; }
+    }).catch(() => {});
+}
+function methodLabel() {
+  if (fbUser) {
+    const p = (fbUser.providerData && fbUser.providerData[0] && fbUser.providerData[0].providerId) || '';
+    return ({ 'google.com': 'Google', 'github.com': 'GitHub', 'password': 'メールアドレス' })[p] || 'ログイン';
+  }
+  if (scratchUser) return 'Scratch';
+  return '';
+}
+function memberNoText() {
+  if (fbUser) return fbMemberNo !== null ? '会員No.' + String(fbMemberNo).padStart(4, '0') : '会員No.発行中…';
+  return '会員No. —';
+}
+async function ensureMemberNo() {
+  if (!fbUser || fbMemberNo !== null || fbMemberBusy) return;
+  fbMemberBusy = true;
+  try {
+    const userRef = doc(db, 'users', fbUser.uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      fbMemberNo = snap.data().no;
+    } else {
+      fbMemberNo = await runTransaction(db, async (tx) => {
+        const counterRef = doc(db, 'meta', 'counter');
+        const c = await tx.get(counterRef);
+        const next = (c.exists() ? c.data().count : 0) + 1;
+        tx.set(counterRef, { count: next });
+        tx.set(userRef, { no: next });
+        return next;
+      });
+    }
+  } catch (e) { /* 番号が取れなかったら次回また試す */ }
+  fbMemberBusy = false;
+  render();
+}
+function render() {
+  const id = identity();
+  if (id) {
+    mypageLocked.hidden = true;
+    mypageInner.hidden = false;
+    mpName.textContent = id.name;
+    mpMethod.textContent = methodLabel();
+    mpNo.textContent = memberNoText();
+    if (id.avatar) { mpAvatar.src = id.avatar; mpAvatar.hidden = false; }
+    else {
+      mpAvatar.hidden = true;
+      if (scratchUser && !fbUser) scratchAvatar(mpAvatar, id.name);
+    }
+    heroLogin.textContent = 'ログイン中：' + id.name;
+  } else {
+    mypageLocked.hidden = false;
+    mypageInner.hidden = true;
+    heroLogin.textContent = 'ログイン';
+  }
+}
+function openModal() { lmError.hidden = true; modal.hidden = false; }
+function closeModal() { modal.hidden = true; }
+function showError(text) { lmError.textContent = text; lmError.hidden = false; }
+function friendlyError(e) {
+  const code = e && e.code ? e.code : '';
+  const map = {
+    'auth/invalid-credential': 'メールアドレスかパスワードが違います',
+    'auth/user-not-found': 'そのメールアドレスは登録されていません',
+    'auth/wrong-password': 'パスワードが違います',
+    'auth/email-already-in-use': 'そのメールアドレスは登録済みだよ。「ログイン」を押してね',
+    'auth/weak-password': 'パスワードは6文字以上にしてね',
+    'auth/invalid-email': 'メールアドレスの形が違います',
+    'auth/popup-closed-by-user': 'ログイン画面が閉じられたよ',
+    'auth/account-exists-with-different-credential': 'そのアカウントは別のログイン方法で登録済みだよ',
+    'auth/unauthorized-domain': 'このドメインはまだ許可されていません'
+  };
+  return map[code] || 'ログインできませんでした';
+}
+function doScratchLogin() {
+  closeModal();
+  if (window.ScratchLogin) { ScratchLogin.login(); }
+}
+function rememberName(result) {
+  try {
+    const info = result ? getAdditionalUserInfo(result) : null;
+    if (info && info.username && result.user) {
+      localStorage.setItem(NAME_HINT_KEY, JSON.stringify({ uid: result.user.uid, name: info.username }));
+    }
+  } catch (e) {}
+}
+function socialLogin(kind) {
+  const provider = kind === 'google' ? new GoogleAuthProvider() : new GithubAuthProvider();
+  signInWithPopup(auth, provider)
+    .then(result => { rememberName(result); render(); closeModal(); })
+    .catch(e => {
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
+        signInWithRedirect(auth, provider);
+      } else if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
+        showError(friendlyError(e));
+      }
+    });
+}
+async function doLogout() {
+  if (fbUser) { try { await signOut(auth); } catch (e) {} }
+  fbMemberNo = null;
+  scratchUser = null;
+  try { localStorage.removeItem(USER_KEY); localStorage.removeItem(NAME_HINT_KEY); } catch (e) {}
+  if (window.ScratchLogin) { try { ScratchLogin.logout(); } catch (e) {} }
+  render();
+}
+
+heroLogin.addEventListener('click', () => {
+  if (identity()) { document.getElementById('mypage').scrollIntoView({ behavior: 'smooth' }); }
+  else openModal();
+});
+document.getElementById('mpLoginBtn').addEventListener('click', openModal);
+document.getElementById('mpLogout').addEventListener('click', doLogout);
+document.getElementById('lmClose').addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+document.getElementById('lmScratch').addEventListener('click', doScratchLogin);
+document.getElementById('lmGoogle').addEventListener('click', () => socialLogin('google'));
+document.getElementById('lmGithub').addEventListener('click', () => socialLogin('github'));
+document.getElementById('lmEmailForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const email = document.getElementById('lmEmail').value.trim();
+  const pass = document.getElementById('lmPassword').value;
+  signInWithEmailAndPassword(auth, email, pass)
+    .then(() => closeModal())
+    .catch(err => showError(friendlyError(err)));
+});
+document.getElementById('lmEmailSignup').addEventListener('click', () => {
+  const email = document.getElementById('lmEmail').value.trim();
+  const pass = document.getElementById('lmPassword').value;
+  if (!email || !pass) { showError('メールアドレスとパスワードを入れてね'); return; }
+  createUserWithEmailAndPassword(auth, email, pass)
+    .then(() => closeModal())
+    .catch(err => showError(friendlyError(err)));
+});
+
+getRedirectResult(auth).then(result => { if (result) { rememberName(result); render(); } }).catch(() => {});
+onAuthStateChanged(auth, user => { fbUser = user; if (!user) fbMemberNo = null; render(); if (user) ensureMemberNo(); });
+
+render();
+</script>
+
 </body>
 </html>
